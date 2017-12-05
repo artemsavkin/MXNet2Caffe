@@ -1,5 +1,7 @@
 # prototxt_basic
 
+import sys
+
 def data(txt_file, info):
   txt_file.write('name: "mxnet-mdoel"\n')
   txt_file.write('layer {\n')
@@ -126,6 +128,40 @@ def FullyConnected(txt_file, info):
   txt_file.write('\n')
   pass
 
+def Dropout(txt_file, info):
+  txt_file.write('layer {\n')
+  txt_file.write('  bottom: "%s"\n'       % info['bottom'][0])
+  txt_file.write('  top: "%s"\n'          % info['top'])
+  txt_file.write('  name: "%s"\n'         % info['top'])
+  txt_file.write('  type: "Dropout"\n')      # TODO
+  txt_file.write('  dropout_param {\n')
+  txt_file.write('      dropout_ratio: "%s"\n'% info['param']['p'])
+  txt_file.write('  }\n')
+  txt_file.write('}\n')
+  txt_file.write('\n')
+  pass
+
+def Custom(txt_file, info):
+    if (info['top']):
+        CustomSoftmax(txt_file, info)
+    pass
+
+def CustomSoftmax(txt_file, info):
+  txt_file.write('layer {\n')
+  for bottom_i in info['bottom']:
+    txt_file.write('  bottom: "%s"\n'     % bottom_i)
+  txt_file.write('  top: "%s"\n'          % info['top'])
+  txt_file.write('  name: loss\n')
+  txt_file.write('  type: "SoftmaxWithLoss"\n')      # TODO
+  txt_file.write('  loss_param {\n')
+  txt_file.write('      ignore_label: "%s"\n'% info['param']['ignore_label'])
+  txt_file.write('      normalize: false\n')
+  txt_file.write('  }\n')
+  txt_file.write('}\n')
+  txt_file.write('\n')
+  pass
+
+
 def Flatten(txt_file, info):
   pass
   
@@ -161,6 +197,10 @@ def write_node(txt_file, info):
         FullyConnected(txt_file, info)
     elif info['op'] == 'SoftmaxOutput':
         SoftmaxOutput(txt_file, info)
+    elif info['op'] == 'Dropout':
+        Dropout(txt_file, info)
+    elif info['op'] == 'Custom':
+        Custom(txt_file, info)
     else:
         sys.exit("Warning!  Unknown mxnet op:{}".format(info['op']))
 
