@@ -153,10 +153,10 @@ def CustomSoftmax(txt_file, info):
   for bottom_i in info['bottom']:
     txt_file.write('  bottom: "%s"\n'     % bottom_i)
   txt_file.write('  top: "%s"\n'          % info['top'])
-  txt_file.write('  name: loss\n')
+  txt_file.write('  name: "loss"\n')
   txt_file.write('  type: "SoftmaxWithLoss"\n')      # TODO
   txt_file.write('  loss_param {\n')
-  txt_file.write('      ignore_label: "%s"\n'% info['param']['ignore_label'])
+  txt_file.write('      ignore_label: %s\n'% info['param']['ignore_label'])
   txt_file.write('      normalize: false\n')
   txt_file.write('  }\n')
   txt_file.write('}\n')
