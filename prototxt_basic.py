@@ -135,15 +135,17 @@ def Dropout(txt_file, info):
   txt_file.write('  name: "%s"\n'         % info['top'])
   txt_file.write('  type: "Dropout"\n')      # TODO
   txt_file.write('  dropout_param {\n')
-  txt_file.write('      dropout_ratio: "%s"\n'% info['param']['p'])
+  txt_file.write('      dropout_ratio: %s\n'% info['param']['p'])
   txt_file.write('  }\n')
   txt_file.write('}\n')
   txt_file.write('\n')
   pass
 
 def Custom(txt_file, info):
-    if (info['top']):
+    if (info['top'] == "softmax"):
         CustomSoftmax(txt_file, info)
+    else:
+        sys.exit("Warning!  Unknown mxnet op:Custom name:{}".format(info['top']))
     pass
 
 def CustomSoftmax(txt_file, info):
